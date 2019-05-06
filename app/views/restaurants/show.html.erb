@@ -1,0 +1,678 @@
+<style>
+/*Show restaurant details*/
+.vertical_line {
+  border-left: 2px solid blue;
+  display:inline-block;
+  height: 60px;
+}
+.button-management { /* You may want to limit the selector */
+  width: 100%; /* Or any other percent */
+}
+.div_info {
+  display: inline-block;
+  width: 80px;
+}
+.mark {
+  color: green;
+  background-color: white;
+  font-size: 20px;
+}
+.rounded-image{
+  border-radius: 50%;
+}
+
+.button {
+  font: bold 11px Arial;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+
+.plabel {
+  font-size: 12px;
+}
+.point {
+  color: #fff;
+  background: #03ae03;
+  text-align: center;
+  border-radius: 100px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  overflow: hidden;
+  font-size: 18px;
+  float: left;
+  margin-right: 425px
+}
+.small-point {
+  color: #fff;
+  background: #03ae03;
+  text-align: center;
+  border-radius: 100px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  overflow: hidden;
+  font-size: 12px;
+  float: left;
+  margin-right: 425px
+}
+.aheader{
+/*display: block;
+padding: 15px 0;
+font-size: 14px;
+color: #005d80;
+border-right: #F0F0F0 1px solid;
+border-bottom: none;
+text-align: center;
+float: left;
+width: 100%;
+font-weight: 700;*/
+}
+.liheader{
+  display: block;
+  font-size: 16px;
+  padding-right: 120px;
+  border-right: #F0F0F0 1px solid;
+  float: left;
+  text-align: center;
+
+}
+.big-textarea{
+  height: 300px;
+  width: 550px;
+}
+
+/*Slider*/
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.menu {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  max-height: 400px;
+}
+
+.comments {
+  grid-row-start: 1;
+
+}
+
+.rating-review {
+ /* grid-row-start: 1;
+  grid-row-end: 2;*/
+  text-align: center;
+  max-height: 400px;
+}
+
+.footer{
+  grid-area: footer;
+}
+
+.grid-container {
+  display: grid;
+  /*grid-template-areas:*/
+  grid-template-columns: 250px auto 250px;
+
+  grid-gap: 30px;
+  /*background-color: #2196F3;*/
+  padding: 10px;
+}
+
+.grid-container > div {
+  /*background-color: rgba(255, 255, 255, 0.8);*/
+  /*text-align: center;*/
+  /*padding: 20px 0;*/
+  /*font-size: 30px;*/
+}
+</style>
+<div class="row area-info">
+  <div class="col-md-5">
+    <% if @restaurant.image? %>
+    <%= image_tag(@restaurant.image.url, height: "300", width: "450") %>
+    <% else %>
+    <%= image_tag("coming_soon.jpg", height: "300", width: "450") %>
+    <% end %>
+  </div>
+  <div class="col-md-7">
+    <h3><%= @restaurant.name %></h3>
+    <p style="display:inline"><span class="glyphicon glyphicon-map-marker"></span><%= @restaurant.location %>(</p><a href="#"><%= t("find_us") %></a>)
+    <h5><strong><span class="glyphicon glyphicon-time"></span> CLOSED</strong></h5>
+    <p style="display:inline"><span class="glyphicon glyphicon-info-sign"></span><%= @restaurant.minprice %>-<%= @restaurant.maxprice %></p>
+    <hr>
+    <div class="div_info">
+      <p class="point">
+        <% if !rated?(@restaurant) %>
+          <%= ("--") %>
+        <% else %>
+          <%= calculate_avg_point(@restaurant) %>
+        <% end %>
+      </p>
+    </div>
+    <div class="div_info">
+      <p class="plabel">Quality</p>
+      <p class="mark">
+        <% if !rated?(@restaurant) %>
+          <b>--</b>
+        <% else %>
+          <b><%= @restaurant.quality_point %></b>
+        <% end %>
+      </p>
+    </div>
+    <!-- <div class="vertical_line"></div> -->
+    <div class="div_info">
+      <p class="plabel">Price</p>
+      <p class="mark">
+        <% if !rated?(@restaurant) %>
+          <b>--</b>
+        <% else %>
+          <b><%= @restaurant.price_point %></b>
+        <% end %>
+      </p>
+    </div>
+    <!-- <div class="vertical_line"></div> -->
+    <div class="div_info">
+      <p class="plabel">Service</p>
+      <p class="mark">
+        <% if !rated?(@restaurant) %>
+          <b>--</b>
+        <% else %>
+          <b><%= @restaurant.service_point %></b>
+        <% end %>
+      </p>
+    </div>
+    <!-- <div class="vertical_line"></div> -->
+    <div class="div_info">
+      <p class="plabel">Space</p>
+      <p class="mark"><b>
+        <% if !rated?(@restaurant) %>
+          <b>--</b>
+        <% else %>
+          <b><%= @restaurant.space_point %></b>
+        <% end %>
+      </b></p>
+    </div>
+    <!-- <div class="vertical_line"></div> -->
+    <div class="div_info">
+      <p class="plabel">Vị trí</p>
+      <p class="mark">
+        <% if !rated?(@restaurant) %>
+          <b>--</b>
+        <% else %>
+          <b><%= @restaurant.location_point %></b>
+        <% end %>
+      </p>
+    </div>
+    <!-- <div class="vertical_line"></div> -->
+    <div class="div_info">
+      <p class="plabel">Comment</p>
+      <p class="mark"><b><%= @restaurant.number_of_commented %></b></p>
+    </div>
+  </div>
+
+</div>
+<br>
+<br>
+<% if current_user && current_user.admin? %>
+  <div class="row area-info">
+    <div class="col-md-4">
+      <button class="btn btn-success btn-lg button-management"><%= link_to t("create_food"), createfo_path %></button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-info btn-lg button-management">Edit restaurant </button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-danger btn-lg button-management">Delete restaurant </button>
+    </div>
+  </div>
+<% else %>
+<div class="row area-info">
+  <!-- <div class="col-md-3"></div> -->
+  <div class="col-md-12">
+    <div class="container-fluid">
+      <ul class="nav navbar-nav">
+        <li class="liheader"><b><span class="glyphicon glyphicon-earphone"></span><a class="aheader" data-toggle="modal" data-target="#callModal"> Phone call</a></b></li>
+        <div class="modal fade" id="callModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+              </div>
+              <div class="modal-body">
+                <p>Some text in the modal.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <li class="liheader"><b><span class="glyphicon glyphicon-comment"></span><a class="aheader" data-toggle="modal" data-target="#commentModal"> Comment</a></b></li>
+        <div class="modal fade" id="commentModal" role="dialog">
+          <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Write comment</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <% if @restaurant.image? %>
+                    <%= image_tag(@restaurant.image.url, height: "200", width: "250") %>
+                    <% else %>
+                    <%= image_tag("coming_soon.jpg", height: "200", width: "250") %>
+                    <% end %>
+                    <br>
+                    <br>
+                    <p class="small-point">3.5</p>
+                    <h5><b><%= @restaurant.name %></b></h5>
+                  </div>
+                  <div class="col-md-8">
+                    <textarea type="text" placeholder="Nhập nội dung bình luận" class="big-textarea"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Done</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <li class="liheader"><b><span class="glyphicon glyphicon-picture"></span><a class="aheader" data-toggle="modal" data-target="#imageModal"> Image</a></b></li>
+        <div class="modal fade" id="imageModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+              </div>
+              <div class="modal-body">
+                <p>Some text in the modal.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Done</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <li class="liheader">
+          <b><span class="glyphicon glyphicon-star"></span>
+            <% if current_user && !current_user.admin? %>
+              <a class="aheader" data-toggle="modal" data-target="#ratingModal"> Rating</a>
+            <% else %>
+              <a class="aheader" data-toggle="modal" data-target="#loginRequestModal"> Rating</a>
+            <% end %>
+          </b>
+        </li>
+        <div class="modal fade" id="loginRequestModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Log in to continue</h4>
+              </div>
+              <div class="modal-body">
+                <button class="btn btn-info"><%= link_to t("login"), login_path %></button>
+              </div>
+              <div class="modal-footer">
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal fade" id="ratingModal" role="dialog">
+          <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Rating</h4>
+              </div>
+
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <% if @restaurant.image? %>
+                    <%= image_tag(@restaurant.image.url, height: "200", width: "250") %>
+                    <% else %>
+                    <%= image_tag("coming_soon.jpg", height: "200", width: "250") %>
+                    <% end %>
+                    <br>
+                    <br>
+                    <p class="small-point">3.5</p>
+                    <h5><b><%= @restaurant.name %></b></h5>
+                  </div>
+                  <div class="col-md-8">
+                    <%= form_for(@rating) do |f| %>
+                      <div class="row">
+                        <div class="col-md-3"> <%= f.label :quality %></div>
+                        <div class="col-md-8">
+                          <%= f.range_field(:quality_point, in: 0..10, class: "slider myRange") %>
+                        </div>
+                        <div class="col-md-1">
+                          <span class="demo"></span>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-3"> <%= f.label :price %></div>
+                        <div class="col-md-8">
+                          <%= f.range_field(:price_point, in: 0..10, class: "slider myRange") %>
+                        </div>
+                        <div class="col-md-1">
+                          <span class="demo"></span>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-3"> <%= f.label :service %></div>
+                        <div class="col-md-8">
+                          <%= f.range_field(:service_point, in: 0..10, class: "slider myRange") %>
+                        </div>
+                        <div class="col-md-1">
+                          <span class="demo"></span>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-3"> <%= f.label :space %></div>
+                        <div class="col-md-8">
+                          <%= f.range_field(:space_point, in: 0..10, class: "slider myRange") %>
+                        </div>
+                        <div class="col-md-1">
+                          <span class="demo"></span>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-3"> <%= f.label :location %></div>
+                        <div class="col-md-8">
+                          <%= f.range_field(:location_point, in: 0..10, class: "slider myRange") %>
+                        </div>
+                        <div class="col-md-1">
+                          <span class="demo"></span>
+                        </div>
+                    </div>
+                    <br>
+                    <%= f.submit t("submit"), class: "btn btn-primary", data: { disable_with: false },:id => "submit_point" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Done</button>
+              </div> -->
+            </div>
+
+          </div>
+        </div>
+        <li class="liheader"><b><span class="glyphicon glyphicon-share-alt"></span><a class="aheader" data-toggle="modal" data-target="#shareModal"> Share</a></b></li>
+        <div class="modal fade" id="shareModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+              </div>
+              <div class="modal-body">
+                <p>Some text in the modal.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Done</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>
+<br>
+<h4><b>Order food & deliver now</b></h4>
+<hr>
+<div class="row area-info">
+  <% for i in 0..(@foods.count/2) do %>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @foods[left_idx i] %>
+          <%= render @foods[left_idx i] %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <% if @foods[right_idx i] %>
+          <%= render @foods[right_idx i] %>
+        <% end %>
+      </div>
+    </div>
+    <br>
+    <hr>
+  <% end %>
+</div>
+<br>
+<br>
+<div class="grid-container">
+  <div class="menu area-info">Menu</div>
+  <div class="comments">
+    <div class="row">
+      <div class="area-info">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="avatar-user">
+              <%= image_tag("coming_soon.jpg", height: "60", width: "100") %>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div data-user-name="user-name"><b>Duy Bui</b></div>
+            <div data-user-created-at="comment-created-at">
+              <p class="plabel">30/4/2019 16:15</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <p data-content-commnet="content-comment" style="padding-left: 20px">Some thing</p>
+        </div>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="area-info">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="avatar-user">
+              <%= image_tag("coming_soon.jpg", height: "60", width: "100") %>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div data-user-name="user-name"><b>Duy Bui</b></div>
+            <div data-user-created-at="comment-created-at">
+              <p class="plabel">30/4/2019 16:15</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <p data-content-commnet="content-comment" style="padding-left: 20px">Some thing</p>
+        </div>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="area-info">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="avatar-user">
+              <%= image_tag("coming_soon.jpg", height: "60", width: "100") %>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div data-user-name="user-name"><b>Duy Bui</b></div>
+            <div data-user-created-at="comment-created-at">
+              <p class="plabel">30/4/2019 16:15</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <p data-content-commnet="content-comment" style="padding-left: 20px">Some thing</p>
+        </div>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+  </div>
+
+  <div class="rating-review area-info">Rating Reviews</div>
+</div>
+<!-- <div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-7 area-info">
+    <div class="comment">
+      <div class="row">
+        <div class="col-md-2">
+          <div class="avatar-user">
+            <%= image_tag("coming_soon.jpg", height: "60", width: "100") %>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div data-user-name="user-name"><b>Duy Bui</b></div>
+          <div data-user-created-at="comment-created-at">
+            <p class="plabel">30/4/2019 16:15</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+        <p data-content-commnet="content-comment" style="padding-left: 20px">Some thing</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3"></div>
+</div> -->
+<br>
+
+<!-- <div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-7 area-info">
+    <div class="comment">
+      <div class="row">
+        <div class="col-md-2">
+          <div class="avatar-user">
+            <%= image_tag("coming_soon.jpg", height: "60", width: "100") %>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div data-user-name="user-name"><b>Duy Bui</b></div>
+          <div data-user-created-at="comment-created-at">
+            <p class="plabel">30/4/2019 16:15</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+        <p data-content-commnet="content-comment" style="padding-left: 20px">Some thing</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3"></div>
+</div> -->
+
+<% end %>
+<script>
+  var slider = document.getElementsByClassName("myRange");
+  var output = document.getElementsByClassName("demo");
+
+  for (let i = 0; i < 5;i ++) {
+    output[i].innerHTML = slider[i].value;
+    slider[i].oninput = function() {
+      output[i].innerHTML = this.value;
+      // console.log(output)
+      // console.log(slide[i])
+      // console.log(output[i])
+    }
+  }
+
+  $("#submit_point").click(function() {
+    $("#ratingModal").modal("hide");
+});
+
+  // var submit_point_btn = document.getElementById("submit_point");
+  // submit_point_btn.onclick = function() {
+  //   quality_point = document.getElementById("rating_quality_point").value;
+  //   service_point = document.getElementById("rating_service_point").value;
+  //   price_point = document.getElementById("rating_price_point").value;
+  //   location_point = document.getElementById("rating_location_point").value;
+  //   space_point = document.getElementById("rating_space_point").value;
+  //   console.log(quality_point)
+  // }
+
+  // slider.oninput = function() {
+  //   output.innerHTML = this.value;
+  // }
+</script>
+<!-- <div class="container-fluid" style="background-color: RGBA(0, 170, 168, 1); color:#fff; height:200px;">
+<h1>Scrollspy & Affix Example</h1>
+<h3>Fixed navbar on scroll</h3>
+<p>Scroll this page to see how the navbar behaves with data-spy="affix" and data-spy="scrollspy".</p>
+<p>The navbar is attached to the top of the page after you have scrolled a specified amount of pixels, and the links in the navbar are automatically updated based on scroll position.</p>
+</div>
+-->
+

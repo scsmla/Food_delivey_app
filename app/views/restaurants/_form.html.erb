@@ -1,0 +1,44 @@
+<%= form_for(@restaurant) do |f| %>
+  <%= render "shared/error_messages", object: @restaurant %>
+
+  <%= f.label :name %>
+  <%= f.text_field :name, class: "form-control" %>
+
+  <%= f.label :location %>
+  <%= f.text_field :location, class: "form-control" %>
+
+  <%= f.label :minprice %>
+  <%= f.number_field :minprice, class: "form-control" %>
+
+  <%= f.label :maxprice %>
+  <%= f.number_field :maxprice, class: "form-control" %>
+  <br>
+
+  <span class="picture">
+    <%= f.file_field :image, accept: "image/jpeg,image/gif,image/png" %>
+  </span>
+  <br>
+
+  <%= f.submit yield(:button_text), class: "btn btn-primary" %>
+<% end %>
+
+<script type="text/javascript">
+  $("#restaurant_image").bind("change", function() {
+    var size_in_megabytes = this.files[0].size/1024/1024;
+    if (size_in_megabytes > Settings.maxmimum_image_size) {
+      alert("Maximum file size is 5MB. Please choose a smaller file.");
+    }
+  });
+</script>
+
+
+<!-- t.string :name
+      t.string :location
+      t.integer :total_ratings
+      t.float :ratings
+      t.integer :minprice
+      t.integer :maxprice
+      t.string :open_time
+      t.string :close_time
+      t.integer :total_reviews
+ -->
